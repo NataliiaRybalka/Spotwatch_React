@@ -16,10 +16,16 @@ export default function App() {
         // setTime((time) => time + 1);
 
         setSec((sec) => sec + 1);
-        console.log(sec);
-        if (sec > 10) {
+        if (sec === 3) {
           setSec(0);
           setMin(min => min + 1);
+        }
+        if (min === 3 && sec === 3) {
+          setMin(0);
+          setHour(hour => hour + 1);
+        }
+        if (hour === 3 && min === 3 && sec === 3) {
+          setHour(0);
         }
       }, 1000);
     } else {
@@ -28,7 +34,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [isActive, sec]);
+  }, [isActive, sec, min, hour]);
   
   const onStart = () => {
     setIsActive(true);
