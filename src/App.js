@@ -1,63 +1,73 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from "react";
+  
 export default function App() {
-  const [hh, setHH] = useState(0);
-  const [mm, setMM] = useState(0);
-  const [ss, setSS] = useState(0);
-  const [isStarted, setIsStarted] = useState(false);
-  let watch;
+  const [isActive, setIsActive] = useState(false);
+  const [time, setTime] = useState(0);
 
-  if (isStarted) {
-    watch = setInterval(() => startSetTime(), 1000);
-  } else {
-    clearInterval(watch);
-  }
+  const [sec, setSec] = useState(0);
+  const [min, setMin] = useState(0);
+  const [hour, setHour] = useState(0);
+  
+  useEffect(() => {
+    let interval = null;
+  
+    if (isActive) {
+      interval = setInterval(() => {
+        // setTime((time) => time + 1);
 
+        setSec((sec) => sec + 1);
+        console.log(sec);
+        if (sec > 10) {
+          setSec(0);
+          setMin(min => min + 1);
+        }
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isActive]);
+  
   const onStart = () => {
-    setIsStarted(true);
-  }
-
+    setIsActive(true);
+  };
+  
   const onStop = () => {
-    setIsStarted(false);
-  }
-
-  const startSetTime = () => {
-    setSS(ss + 1);
-    if (ss > 59) {
-      setMM(mm + 1 );
-      setSS(0);
-    }
-    if (mm > 59) {
-      setHH(hh + 1 );
-      setMM(0);
-    }
-    if (hh > 23) {
-      setHH(0);
-    }
-  }
+    setIsActive(false);
+    // setTime(0);
+    setSec(0);
+    setMin(0);
+    setHour(0);
+  };
 
   const onWait = () => {
-    if (isStarted) {
-      return setIsStarted(false);
-    }
-
-    setIsStarted(true);
+    setIsActive(false);
   }
-
+  
   const onReset = () => {
-    setIsStarted(false);
-
-    setHH(0);
-    setMM(0);
-    setSS(0);
-  }
+    // setTime(0);
+    setSec(0);
+    setMin(0);
+    setHour(0);
+    setIsActive(true);
+  };
 
   return (
     <div>
-      <h1> {hh} : {mm} : {ss} </h1>
+      <div>
+        {/* {("0" + Math.floor((time / 60000) % 60)).slice(-2)}
+        :
+        {("0" + Math.floor(time / 60000)).slice(-2)}
+        :
+        {("0" + Math.floor(time)).slice(-2)} */}
+
+        {hour} : {min} : {sec}
+      </div>
 
       <div>
-        {!isStarted ? (
+        {!isActive ? (
           <button onClick={onStart}>Start</button>
         ) : (
           <button onClick={onStop}>Stop</button>
@@ -66,5 +76,6 @@ export default function App() {
         <button onClick={onReset}>Reset</button>
       </div>
     </div>
-  )
+  );
 }
+  
