@@ -28,7 +28,7 @@ export default function App() {
     return () => {
       clearInterval(interval);
     };
-  }, [isActive]);
+  }, [isActive, sec]);
   
   const onStart = () => {
     setIsActive(true);
