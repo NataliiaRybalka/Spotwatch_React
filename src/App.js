@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
   
 export default function App() {
   const [isActive, setIsActive] = useState(false);
-  const [time, setTime] = useState(0);
-
   const [sec, setSec] = useState(0);
   const [min, setMin] = useState(0);
   const [hour, setHour] = useState(0);
@@ -13,18 +11,16 @@ export default function App() {
   
     if (isActive) {
       interval = setInterval(() => {
-        // setTime((time) => time + 1);
-
         setSec((sec) => sec + 1);
-        if (sec === 3) {
+        if (sec === 59) {
           setSec(0);
           setMin(min => min + 1);
         }
-        if (min === 3 && sec === 3) {
+        if (min === 59 && sec === 59) {
           setMin(0);
           setHour(hour => hour + 1);
         }
-        if (hour === 3 && min === 3 && sec === 3) {
+        if (hour === 23 && min === 59 && sec === 59) {
           setHour(0);
         }
       }, 1000);
@@ -42,34 +38,47 @@ export default function App() {
   
   const onStop = () => {
     setIsActive(false);
-    // setTime(0);
     setSec(0);
     setMin(0);
     setHour(0);
   };
 
-  const onWait = () => {
-    setIsActive(false);
+  let clicks = [];
+
+  const onWait = (event) => {
+    let timeout;
+
+    event.preventDefault();
+
+    clicks.push(new Date().getTime());
+    window.clearTimeout(timeout);
+
+    timeout = window.setTimeout(() => {
+      if (clicks.length > 1 && (clicks[1] - clicks[0]) < 300) {
+        setIsActive(false);
+      }
+    }, 300);
   }
   
   const onReset = () => {
-    // setTime(0);
-    setSec(0);
-    setMin(0);
-    setHour(0);
-    setIsActive(true);
+    if (isActive) {
+      setSec(0);
+      setMin(0);
+      setHour(0);
+      setIsActive(true);
+    }
   };
 
   return (
     <div>
       <div>
-        {/* {("0" + Math.floor((time / 60000) % 60)).slice(-2)}
+        {/* {hour} : {min} : {sec} */}
+        {hour <= 9 ? ('0' + hour) : hour}
         :
-        {("0" + Math.floor(time / 60000)).slice(-2)}
+        {min <= 9 ? ('0' + min) : min}
         :
-        {("0" + Math.floor(time)).slice(-2)} */}
+        {sec <= 9 ? ('0' + sec) : sec}
 
-        {hour} : {min} : {sec}
       </div>
 
       <div>
